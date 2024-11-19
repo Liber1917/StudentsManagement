@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+    <student>
+        <studentId>2022.0</studentId>
+        <name>Karl</name>
+        <gender>F</gender>
+        <phone>86</phone>
+        <email>2022@mail</email>
+        <college>Philo</college>
+        <major>Mx</major>
+    </student>
+    <student>
+        <studentId>5563.0</studentId>
+        <name>Xjw</name>
+        <gender>M</gender>
+        <phone>189</phone>
+        <email>5563@mail</email>
+        <college>Info</college>
+        <major>AI</major>
+    </student>
+    <student>
+        <studentId>1234.0</studentId>
+        <name>Alice</name>
+        <gender>F</gender>
+        <phone>123-456-7890</phone>
+        <email>alice@example.com</email>
+        <college>Science</college>
+        <major>Biology</major>
+    </student>
+    <student>
+        <studentId>5678.0</studentId>
+        <name>Bob</name>
+        <gender>M</gender>
+        <phone>987-654-3210</phone>
+        <email>bob@example.com</email>
+        <college>Engineering</college>
+        <major>Computer Science</major>
+    </student>
+</students>
