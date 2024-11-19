@@ -1,8 +1,12 @@
 package com.students.model;
 
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.xml.sax.SAXException;
 
 public class StudentDAO {
     private Connection conn;
@@ -29,6 +33,24 @@ public class StudentDAO {
             pstmt.setString(6, student.getCollege());
             pstmt.setString(7, student.getMajor());
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void insertStudents(List<StudentPO> students) {
+        String sql = "INSERT INTO students (studentId, name, gender, phone, email, college, major) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            for (StudentPO student : students) {
+                pstmt.setString(1, student.getStudentId());
+                pstmt.setString(2, student.getName());
+                pstmt.setString(3, student.getGender());
+                pstmt.setString(4, student.getPhone());
+                pstmt.setString(5, student.getEmail());
+                pstmt.setString(6, student.getCollege());
+                pstmt.setString(7, student.getMajor());
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,23 +103,35 @@ public class StudentDAO {
         return students;
     }
 
-    // 添加批量插入学生的方法
-    public void insertStudents(List<StudentPO> students) {
-        String sql = "INSERT INTO students (studentId, name, gender, phone, email, college, major) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            for (StudentPO student : students) {
-                pstmt.setString(1, student.getStudentId());
-                pstmt.setString(2, student.getName());
-                pstmt.setString(3, student.getGender());
-                pstmt.setString(4, student.getPhone());
-                pstmt.setString(5, student.getEmail());
-                pstmt.setString(6, student.getCollege());
-                pstmt.setString(7, student.getMajor());
-                pstmt.addBatch();
+    public void importStudentsFromXML(String xmlFilePath) {
+        try {
+            File xmlFile = new File(xmlFilePath);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(xmlFile);
+            doc.getDocumentElement().normalize();
+
+            NodeList studentList = doc.getElementsByTagName("student");
+
+            for (int i = 0; i < studentList.getLength(); i++) {
+                Node studentNode = studentList.item(i);
+                if (studentNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element studentElement = (Element) studentNode;
+
+                    String studentId = studentElement.getElementsByTagName("studentId").item(0).getTextContent();
+                    String name = studentElement.getElementsByTagName("name").item(0).getTextContent();
+                    String gender = studentElement.getElementsByTagName("gender").item(0).getTextContent();
+                    String phone = studentElement.getElementsByTagName("phone").item(0).getTextContent();
+                    String email = studentElement.getElementsByTagName("email").item(0).getTextContent();
+                    String college = studentElement.getElementsByTagName("college").item(0).getTextContent();
+                    String major = studentElement.getElementsByTagName("major").item(0).getTextContent();
+
+                    insertStudent(new StudentPO(studentId, name, gender, phone, email, college, major));
+                }
             }
-            pstmt.executeBatch();
-        } catch (SQLException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
     }
+
 }

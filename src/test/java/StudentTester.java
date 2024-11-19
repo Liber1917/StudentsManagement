@@ -18,6 +18,10 @@ public class StudentTester {
         // Create database table
         createStudentTable();
 
+        // Import students from XML file
+        String xmlFilePath = "E:\\NEU\\2024\\Herbst\\T1\\JAVA\\prj\\addressBook\\src\\main\\resources\\students.xml";
+        studentDAO.importStudentsFromXML(xmlFilePath);
+
         // Test CRUD operations
         StudentPO testStudent = new StudentPO("001", "Test Student", "Male", "1234567890", "test@example.com", "Engineering", "Computer Science");
         studentDAO.insertStudent(testStudent);
